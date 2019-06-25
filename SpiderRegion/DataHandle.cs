@@ -77,16 +77,6 @@ namespace SpiderRegion
     {
 
         /// <summary>
-        /// 获得清理的区域名称
-        /// </summary>
-        /// <returns></returns>
-        //public static string GetCleanRegionName(string cityName)
-        //{
-        //    return cityName.Replace("自治县", "").Replace("自治州", "").Replace("村委会", "村").Replace("街道办事处", "街道")
-        //        .Trim('市').Trim('区').TrimEnd('县');
-        //}
-
-        /// <summary>
         /// 获得清理的省份名称
         /// </summary>
         /// <returns></returns>

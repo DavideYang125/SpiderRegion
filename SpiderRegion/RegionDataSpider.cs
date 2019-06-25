@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SpiderRegion
 {
@@ -27,7 +26,7 @@ namespace SpiderRegion
             HtmlWeb htmlWeb = new HtmlWeb();
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(content);
-            //var doc =   //htmlWeb.Load(url);
+
             var proTrNodes = doc.DocumentNode.SelectNodes(@"//tr[@class='provincetr']");
             var provincePreUrl = "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2018/";
             foreach (var singleProTrNodes in proTrNodes)
@@ -86,8 +85,6 @@ namespace SpiderRegion
 
                         var cityDoc = new HtmlDocument(); //htmlWeb.Load(proUrl);
                         cityDoc.LoadHtml(cityContent);
-
-                        //var cityDoc = htmlWeb.Load(cityUrl);
 
                         var cityUrlExtension = cityUrl.Substring(0, cityUrl.LastIndexOf("."));//.Substring(cityUrl.Length - 2);
                         cityUrlExtension = cityUrlExtension.Substring(cityUrlExtension.Length - 2);
