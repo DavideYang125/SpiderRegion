@@ -22,7 +22,7 @@ namespace SpiderRegion
             string content = string.Empty;
             try
             {
-                System.Threading.Thread.Sleep(100);
+                System.Threading.Thread.Sleep(10);
                 var clientHandler = new HttpClientHandler();
                 if (clientHandler.SupportsAutomaticDecompression)
                 {

@@ -2,16 +2,51 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace SpiderRegion
 {
     public class DataHandle
     {
+        private static List<string> provincesList = new List<string>() {  "新疆维吾尔自治区", "宁夏回族自治区","青海省", "甘肃省", "陕西省", "西藏自治区",
+            "云南省", "贵州省", "四川省", "重庆市", "海南省",
+        "广西壮族自治区","广东省","湖南省","湖北省","河南省","山东省","江西省","福建省","安徽省","浙江省","江苏省","上海市","北京市"
+       ,"天津市","河北省","山西省","内蒙古自治区","辽宁省","吉林省","黑龙江省"};
 
-        public static void OutputData()
+        /// <summary>
+        /// 合并数据
+        /// </summary>
+        public static void CombinData()
         {
             var path = @"G:\project\region_info\total_info.json";
+            var newPath = @"G:\project\region_info\new_total_info.json";
+            var content = File.ReadAllText(path, Encoding.UTF8);
+            var regionModel = JsonConvert.DeserializeObject<RegionModel>(content);
+            var logDir = @"G:\project\region_info\Single_info";
+            var files = Directory.GetFiles(logDir);
+
+
+            foreach (var filePath in files)
+            {
+                var singleContent = File.ReadAllText(filePath, Encoding.UTF8);
+                var singleModel = JsonConvert.DeserializeObject<RegionModel>(singleContent);
+                var pName = singleModel.Provinces.FirstOrDefault().ProvinceName;
+                Console.WriteLine(pName);
+                if (!regionModel.Provinces.Select(x => x.ProvinceName).Contains(singleModel.Provinces.FirstOrDefault().ProvinceName))
+                {
+                    regionModel.Provinces.Add(singleModel.Provinces.FirstOrDefault());
+                }
+            }
+            File.WriteAllText(newPath, JsonConvert.SerializeObject(regionModel), Encoding.UTF8);
+        }
+
+        /// <summary>
+        /// 输出csv文件
+        /// </summary>
+        public static void OutputData()
+        {
+            var path = @"G:\project\region_info\new_total_info_with_shortname.json";
             var csvPath = @"G:\project\region_info\region_info.csv";
             var content = File.ReadAllText(path, Encoding.UTF8);
             var regionModel = JsonConvert.DeserializeObject<RegionModel>(content);
@@ -38,6 +73,7 @@ namespace SpiderRegion
                 }
             }
             StringBuilder strBuilder = new StringBuilder();
+            strBuilder.AppendLine("代码,名称,等级,简称");
             foreach (var info in infos)
             {
                 strBuilder.AppendLine(info);
@@ -45,9 +81,13 @@ namespace SpiderRegion
             File.WriteAllText(csvPath, strBuilder.ToString(), Encoding.UTF8);
         }
 
+        /// <summary>
+        /// 设置简称
+        /// </summary>
         public static void SetShortName()
         {
-            var path = @"G:\project\region_info\total_info.json";
+            var path = @"G:\project\region_info\new_total_info.json";
+            var newPath = @"G:\project\region_info\new_total_info_with_shortname.json";
             var content = File.ReadAllText(path, Encoding.UTF8);
             var regionModel = JsonConvert.DeserializeObject<RegionModel>(content);
             foreach (var province in regionModel.Provinces)
@@ -61,6 +101,7 @@ namespace SpiderRegion
                         district.ShortName = ShortNameHelper.GetCleanDistrictName(district.DistrictName);
                         foreach (var town in district.Towns)
                         {
+                            if (string.IsNullOrEmpty(town.TownName)) town.TownName = town.ShortName;
                             town.ShortName = ShortNameHelper.GetCleanTownName(town.TownName);
                             foreach (var village in town.Villages)
                             {
@@ -71,11 +112,12 @@ namespace SpiderRegion
                     }
                 }
             }
+
+            File.WriteAllText(newPath, JsonConvert.SerializeObject(regionModel), Encoding.UTF8);
         }
     }
     public class ShortNameHelper
     {
-
         /// <summary>
         /// 获得清理的省份名称
         /// </summary>

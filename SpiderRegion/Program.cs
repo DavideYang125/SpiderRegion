@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpiderRegion
 {
@@ -10,6 +6,9 @@ namespace SpiderRegion
     {
         static void Main(string[] args)
         {
+            //多线程采集           
+            RegionDataSpider.GetSingleProvinces();
+            return;
             Console.WriteLine("开始运行");
             RegionDataSpider.Run();
             Console.ReadKey();
